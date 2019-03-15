@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztm.messageboard.dao.ReviewDao">
+    <resultMap id="review" type="com.ztm.messageboard.entity.ReviewDO" >
+        <id column="id" property="reviewId"/>
+        <result column="user_id" property="userId"/>
+        <result column="review_content" property="reviewContent"/>
+        <result column="reviewed_message_id" property="reviewedMessageId"/>
+    </resultMap>
+    <!--查询所有的留言信息-->
+    <select id="queryAllReviewData" resultMap="review">
+        SELECT id,user_id,review_content,reviewed_message_id
+        from review
+    </select>
+</mapper>

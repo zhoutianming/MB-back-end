@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztm.messageboard.dao.UserDao">
+    <resultMap id="userDO" type="com.ztm.messageboard.entity.UserDO" >
+        <id column="id" property="id"/>
+        <result column="name" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="type" property="type"/>
+        <result column="head_img" property="headImg"/>
+        <result column="writed" property="writed"/>
+    </resultMap>
+    <!--登录时查询用户信息-->
+    <select id="queryUser" parameterType="String" resultMap="userDO">
+        SELECT NAME,PASSWORD,TYPE from user WHERE NAME = #{userName}
+    </select>
+    <!--查询所有的用户信息-->
+    <select id="queryAllUserData" resultMap="userDO">
+        SELECT ID,NAME,WRITED,HEAD_IMG from user
+    </select>
+
+    <insert id="insertUser" parameterType="com.ztm.messageboard.entity.UserDO">
+        INSERT INTO user (NAME,PASSWORD) VALUES (
+        #{userName},#{password}
+        )
+    </insert>
+</mapper>

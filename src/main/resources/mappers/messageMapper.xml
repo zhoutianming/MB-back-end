@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztm.messageboard.dao.MessageDao">
+    <resultMap id="message" type="com.ztm.messageboard.entity.MessageDO" >
+        <id column="id" property="messageId"/>
+        <result column="message_content" property="messageContent"/>
+        <result column="user_id" property="userId"/>
+        <result column="message_img" property="messageImg"/>
+        <result column="praise_point" property="praisePoint"/>
+        <result column="collection_number" property="collectionNumber"/>
+        <result column="page_views" property="pageViews"/>
+        <result column="time" property="time"/>
+    </resultMap>
+    <!--查询所有的留言信息-->
+    <select id="queryAllMessageData" resultMap="message">
+        SELECT id,message_content,user_id,message_img,praise_point,collection_number,page_views,time
+        from message
+    </select>
+
+    <!--保存留言-->
+    <insert id="addMassage" parameterType="com.ztm.messageboard.entity.MessageDO">
+        INSERT INTO message (message_content,user_id,message_img,time)
+        VALUES (#{messageContent},#{userId},#{messageImg},#{time})
+    </insert>
+</mapper>
