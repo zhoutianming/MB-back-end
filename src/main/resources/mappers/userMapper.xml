@@ -9,20 +9,69 @@
         <result column="password" property="password"/>
         <result column="type" property="type"/>
         <result column="head_img" property="headImg"/>
-        <result column="writed" property="writed"/>
     </resultMap>
     <!--登录时查询用户信息-->
     <select id="queryUser" parameterType="String" resultMap="userDO">
-        SELECT NAME,PASSWORD,TYPE from user WHERE NAME = #{userName}
+        SELECT id,NAME,PASSWORD,TYPE,head_img from user WHERE NAME = #{userName}
+    </select>
+    <select id="queryUserList" parameterType="String" resultMap="userDO">
+        SELECT id,NAME,TYPE,head_img from user WHERE NAME like "%"#{userName}"%"
     </select>
     <!--查询所有的用户信息-->
     <select id="queryAllUserData" resultMap="userDO">
-        SELECT ID,NAME,WRITED,HEAD_IMG from user
+        SELECT ID,NAME,TYPE,HEAD_IMG from user
     </select>
-
+    <!--查询所有的用户信息-->
+    <select id="queryUserDataByUserName" parameterType="String" resultMap="userDO">
+        SELECT ID,NAME,TYPE,HEAD_IMG from user where name like "%"#{userName}"%"
+    </select>
+    <!--查询所有的用户信息-->
+    <select id="queryUserDataByType" parameterType="Integer" resultMap="userDO">
+        SELECT ID,NAME,TYPE,HEAD_IMG from user where type = #{type}
+    </select>
+    <!--添加用户-->
     <insert id="insertUser" parameterType="com.ztm.messageboard.entity.UserDO">
         INSERT INTO user (NAME,PASSWORD) VALUES (
         #{userName},#{password}
         )
     </insert>
+    <!--编辑用户-->
+    <update id="editUser" parameterType="com.ztm.messageboard.entity.UserData">
+       update user SET NAME = #{userName},head_img = #{headImg}WHERE  id = #{id}
+    </update>
+    <!--修改用户权限-->
+    <update id="editUserType" parameterType="com.ztm.messageboard.entity.UserData">
+       update user SET type = #{type} WHERE  id = #{id}
+    </update>
+    <!--删除用户及所有相关数据-->
+    <delete id="deleteUserData" parameterType="Integer">
+       delete from user WHERE  id = #{userId}
+    </delete>
+    <!--添加关注的人-->
+    <insert id="addCarePerson" parameterType="com.ztm.messageboard.entity.CarePersonDO">
+      INSERT INTO care_person (user_id,care_person_id)
+      VALUES (#{userId},#{carePersonId})
+    </insert>
+    <!--判断是否已有关注的人-->
+    <select id="queryCarePerson" parameterType="com.ztm.messageboard.entity.CarePersonDO" resultType="Integer">
+        SELECT COUNT(id) from care_person WHERE user_id = #{userId} AND care_person_id = #{carePersonId}
+    </select>
+    <!--获取该用户关注的人-->
+    <select id="getCarePerson" parameterType="Integer" resultMap="userDO">
+        SELECT id,NAME,head_img FROM user
+        WHERE user.id
+        IN (
+            SELECT care_person_id
+            FROM care_person
+            WHERE user_id = #{userId}
+        )
+    </select>
+    <!--删除用户关注的人数据-->
+    <delete id="deleteCarePerson" parameterType="Integer">
+       delete from care_person WHERE  user_id = #{userId} or care_person_id = #{userId}
+    </delete>
+    <!--取消关注-->
+    <delete id="unfollow" parameterType="com.ztm.messageboard.entity.CarePersonDO">
+      delete from care_person WHERE  user_id = #{userId} and care_person_id = #{carePersonId}
+    </delete>
 </mapper>

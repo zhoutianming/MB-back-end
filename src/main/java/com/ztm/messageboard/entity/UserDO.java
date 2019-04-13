@@ -24,22 +24,7 @@ public class UserDO {
      */
     private String headImg;
 
-    /**
-     * 用户签名
-     */
-    private String writed;
-
-
     public UserDO() {
-    }
-
-    public UserDO(Integer id, String userName, String password, Integer type, String headImg, String writed) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.type = type;
-        this.headImg = headImg;
-        this.writed = writed;
     }
 
     public Integer getId() {
@@ -82,14 +67,6 @@ public class UserDO {
         this.headImg = headImg;
     }
 
-    public String getWrited() {
-        return writed;
-    }
-
-    public void setWrited(String writed) {
-        this.writed = writed;
-    }
-
     @Override
     public String toString() {
         return "UserDO{" +
@@ -98,7 +75,6 @@ public class UserDO {
                 ", password='" + password + '\'' +
                 ", type=" + type +
                 ", headImg='" + headImg + '\'' +
-                ", writed='" + writed + '\'' +
                 '}';
     }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztm.messageboard.dao.CollectionDao">
+    <!--删除用户及所有相关数据-->
+    <delete id="delete" parameterType="Integer">
+       delete from collection WHERE  user_id = #{userId}
+    </delete>
+    <!--删除留言-->
+    <delete id="deleteMessage" parameterType="Long">
+        DELETE FROM collection WHERE message_id = #{messageId}
+    </delete>
+</mapper>

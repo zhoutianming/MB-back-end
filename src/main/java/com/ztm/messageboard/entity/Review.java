@@ -1,10 +1,16 @@
 package com.ztm.messageboard.entity;
 
-public class ReviewDO {
+import java.util.List;
+
+public class Review {
     /**
      * 评论id
      */
     private Integer reviewId;
+    /**
+     * 被评论的留言id
+     */
+    private Integer reviewedMessageId;
     /**
      * 评论人id
      */
@@ -21,17 +27,12 @@ public class ReviewDO {
      * 评论内容
      */
     private String reviewContent;
-
     /**
-     * 被评论的留言id
+     * 评论的评论内容
      */
-    private Integer reviewedMessageId;
-    /**
-     * 被评论的评论id
-     */
-    private Integer reviewedReviewId;
+    private List<ReviewPlus> reviewPlusList;
 
-    public ReviewDO() {
+    public Review() {
     }
 
     public Integer getReviewId() {
@@ -40,6 +41,14 @@ public class ReviewDO {
 
     public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public Integer getReviewedMessageId() {
+        return reviewedMessageId;
+    }
+
+    public void setReviewedMessageId(Integer reviewedMessageId) {
+        this.reviewedMessageId = reviewedMessageId;
     }
 
     public Integer getUserId() {
@@ -74,32 +83,24 @@ public class ReviewDO {
         this.reviewContent = reviewContent;
     }
 
-    public Integer getReviewedMessageId() {
-        return reviewedMessageId;
+    public List<ReviewPlus> getReviewPlusList() {
+        return reviewPlusList;
     }
 
-    public void setReviewedMessageId(Integer reviewedMessageId) {
-        this.reviewedMessageId = reviewedMessageId;
-    }
-
-    public Integer getReviewedReviewId() {
-        return reviewedReviewId;
-    }
-
-    public void setReviewedReviewId(Integer reviewedReviewId) {
-        this.reviewedReviewId = reviewedReviewId;
+    public void setReviewPlusList(List<ReviewPlus> reviewPlusList) {
+        this.reviewPlusList = reviewPlusList;
     }
 
     @Override
     public String toString() {
-        return "ReviewDO{" +
+        return "Review{" +
                 "reviewId=" + reviewId +
+                ", reviewedMessageId=" + reviewedMessageId +
                 ", userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", headImg='" + headImg + '\'' +
                 ", reviewContent='" + reviewContent + '\'' +
-                ", reviewedMessageId=" + reviewedMessageId +
-                ", reviewedReviewId=" + reviewedReviewId +
+                ", reviewPlusList=" + reviewPlusList +
                 '}';
     }
 }

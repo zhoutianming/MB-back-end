@@ -8,20 +8,124 @@
         <result column="message_content" property="messageContent"/>
         <result column="user_id" property="userId"/>
         <result column="message_img" property="messageImg"/>
+        <result column="image_width" property="imageWidth"/>
+        <result column="image_height" property="imageHeight"/>
         <result column="praise_point" property="praisePoint"/>
         <result column="collection_number" property="collectionNumber"/>
         <result column="page_views" property="pageViews"/>
         <result column="time" property="time"/>
+        <result column="message_tabs" property="messageTabs"/>
     </resultMap>
     <!--查询所有的留言信息-->
     <select id="queryAllMessageData" resultMap="message">
-        SELECT id,message_content,user_id,message_img,praise_point,collection_number,page_views,time
-        from message
+        SELECT
+        id,
+        message_content,
+        user_id,
+        message_img,
+        image_width,
+        image_height,
+        praise_point,
+        collection_number,
+        page_views,
+        time,
+        message_tabs
+        from message order by praise_point desc
     </select>
-
+    <!--关键字搜索内容-->
+    <select id="searchContent" resultMap="message">
+        SELECT
+        id,
+        message_content,
+        user_id,
+        message_img,
+        image_width,
+        image_height,
+        praise_point,
+        collection_number,
+        page_views,
+        time,
+        message_tabs
+        from message
+        where message_content like "%"#{messageContent}"%"
+        order by praise_point desc
+    </select>
+    <!--查询该用户留言数据-->
+    <select id="getUserMessage" parameterType="Integer" resultMap="message">
+        SELECT id,message_content,user_id,message_img,image_width,image_height,praise_point,collection_number,page_views,time
+        from message WHERE user_id = #{userId} order by time desc
+    </select>
+    <!--根据内容查询留言-->
+    <select id="queryMessageDataByContent" parameterType="String" resultMap="message">
+        SELECT id,message_content,user_id,message_img,image_width,image_height,praise_point,collection_number,page_views,time
+        from message WHERE message_content like "%"#{messageContent}"%" order by time desc
+    </select>
+    <!--查询该用户收藏-->
+    <select id="getUserCollection" parameterType="Integer" resultMap="message">
+        SELECT id,message_content,user_id,message_img,image_width,image_height,praise_point,collection_number,page_views,time
+        from message
+        WHERE id IN (
+          SELECT message_id FROM collection WHERE user_id = #{userId}
+        ) order by time desc
+    </select>
+    <!--获取点赞数-->
+    <select id="getPraiseNum" parameterType="Integer" resultType="Long">
+        SELECT SUM(praise_point) from message WHERE user_id = #{userId}
+    </select>
+    <!--获取关注度-->
+    <select id="getBeCaredNum" parameterType="Integer" resultType="Long">
+        SELECT count(care_person_id) from care_person WHERE care_person_id = #{userId}
+    </select>
     <!--保存留言-->
-    <insert id="addMassage" parameterType="com.ztm.messageboard.entity.MessageDO">
-        INSERT INTO message (message_content,user_id,message_img,time)
-        VALUES (#{messageContent},#{userId},#{messageImg},#{time})
+    <insert id="addMessage" parameterType="com.ztm.messageboard.entity.MessageDO" useGeneratedKeys="true" keyProperty="messageId">
+        INSERT INTO message (message_content,user_id,message_img,image_width,image_height,time,message_tabs)
+        VALUES (#{messageContent},#{userId},#{messageImg},#{imageWidth},#{imageHeight},#{time},#{messageTabs})
     </insert>
+    <!--修改留言-->
+    <update id="editMessage" parameterType="com.ztm.messageboard.entity.MessageDO">
+        UPDATE message
+        SET
+        message_content = #{messageContent},
+        user_id = #{userId},
+        message_img = #{messageImg},
+        image_width = #{imageWidth},
+        image_height = #{imageHeight}
+        WHERE id = #{messageId}
+    </update>
+    <!--修改留言文字内容-->
+    <update id="editMessageText" parameterType="com.ztm.messageboard.entity.MessageDO">
+        UPDATE message
+        SET message_content = #{messageContent}
+        WHERE id = #{messageId}
+    </update>
+    <!--删除用户该留言-->
+    <delete id="deleteMessage" parameterType="Long">
+        DELETE FROM message WHERE id = #{messageId}
+    </delete>
+    <!--删除该用户所有留言-->
+    <delete id="deleteUserMessage" parameterType="Integer">
+        DELETE FROM message WHERE user_id = #{userId}
+    </delete>
+    <!--点赞-->
+    <update id="addPraise" parameterType="Long">
+       update message SET praise_point = praise_point + 1 WHERE  id = #{messageId}
+    </update>
+    <!--查询是否存在收藏-->
+    <select id="queryCollection" parameterType="com.ztm.messageboard.entity.MessageVO" resultType="Integer">
+        SELECT COUNT(id) from collection WHERE user_id = #{userId} AND message_id = #{messageId}
+    </select>
+    <!--增加收藏数-->
+    <update id="addCollectionNum" parameterType="Long">
+       update message SET collection_number = collection_number + 1 WHERE  id = #{messageId}
+    </update>
+    <!--添加收藏-->
+    <insert id="addCollection" parameterType="com.ztm.messageboard.entity.MessageVO">
+      INSERT INTO collection (user_id,message_id)
+      VALUES (#{userId},#{messageId})
+    </insert>
+
+    <!--浏览-->
+    <update id="addView" parameterType="Long">
+       update message SET page_views = page_views + 1 WHERE  id = #{messageId}
+    </update>
 </mapper>

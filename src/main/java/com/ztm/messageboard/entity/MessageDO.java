@@ -18,7 +18,14 @@ public class MessageDO {
      * 留言图片
      */
     private String messageImg;
-
+    /**
+     * 留言图片宽
+     */
+    private Integer imageWidth;
+    /**
+     * 留言图片高
+     */
+    private Integer imageHeight;
     /**
      * 点赞数
      */
@@ -35,9 +42,15 @@ public class MessageDO {
      * 留言时间
      */
     private String time;
-
+    /**
+     * 留言标签
+     */
+    private String messageTabs;
 
     public MessageDO() {
+        this.praisePoint = 0l;
+        this.collectionNumber = 0l;
+        this.pageViews = 0l;
     }
 
     public Long getMessageId() {
@@ -72,6 +85,22 @@ public class MessageDO {
         this.messageImg = messageImg;
     }
 
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
     public Long getPraisePoint() {
         return praisePoint;
     }
@@ -104,4 +133,28 @@ public class MessageDO {
         this.time = time;
     }
 
+    public String getMessageTabs() {
+        return messageTabs;
+    }
+
+    public void setMessageTabs(String messageTabs) {
+        this.messageTabs = messageTabs;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageDO{" +
+                "messageId=" + messageId +
+                ", messageContent='" + messageContent + '\'' +
+                ", userId=" + userId +
+                ", messageImg='" + messageImg + '\'' +
+                ", imageWidth=" + imageWidth +
+                ", imageHeight=" + imageHeight +
+                ", praisePoint=" + praisePoint +
+                ", collectionNumber=" + collectionNumber +
+                ", pageViews=" + pageViews +
+                ", time='" + time + '\'' +
+                ", messageTabs='" + messageTabs + '\'' +
+                '}';
+    }
 }

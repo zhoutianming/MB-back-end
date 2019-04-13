@@ -14,6 +14,14 @@ public class Content {
      */
     private String messageImg;
     /**
+     * 留言图片宽
+     */
+    private Integer imageWidth;
+    /**
+     * 留言图片高
+     */
+    private Integer imageHeight;
+    /**
      * 点赞数
      */
     private Long praisePoint;
@@ -71,6 +79,22 @@ public class Content {
 
     public void setMessageImg(String messageImg) {
         this.messageImg = messageImg;
+    }
+
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
     }
 
     public Long getPraisePoint() {
@@ -137,4 +161,22 @@ public class Content {
         this.headImg = headImg;
     }
 
+    @Override
+    public String toString() {
+        return "Content{" +
+                "messageId=" + messageId +
+                ", messageContent='" + messageContent + '\'' +
+                ", messageImg='" + messageImg + '\'' +
+                ", imageWidth=" + imageWidth +
+                ", imageHeight=" + imageHeight +
+                ", praisePoint=" + praisePoint +
+                ", collectionNumber=" + collectionNumber +
+                ", reviewNumber=" + reviewNumber +
+                ", pageViews=" + pageViews +
+                ", time='" + time + '\'' +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", headImg='" + headImg + '\'' +
+                '}';
+    }
 }

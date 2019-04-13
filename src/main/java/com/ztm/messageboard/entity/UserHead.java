@@ -2,69 +2,66 @@ package com.ztm.messageboard.entity;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class MessageVO {
-
+public class UserHead {
     /**
-     * 留言内容
+     * 用户id
      */
-    private String messageContent;
+    private Integer id;
     /**
-     * 留言图片
+     * 用户名
      */
-    private MultipartFile image;
-
+    private String userName;
     /**
-     * 留言人id
+     * 用户旧头像
      */
-    private Integer userId;
+    private String oldHeadImg;
     /**
-     * 留言时间
+     * 用户头像
      */
-    private String time;
+    private MultipartFile headImg;
 
-
-    public MessageVO() {
+    public UserHead() {
     }
 
-    public String getMessageContent() {
-        return messageContent;
+    public Integer getId() {
+        return id;
     }
 
-    public void setMessageContent(String messageContent) {
-        this.messageContent = messageContent;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public MultipartFile getImage() {
-        return image;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setImage(MultipartFile image) {
-        this.image = image;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getOldHeadImg() {
+        return oldHeadImg;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setOldHeadImg(String oldHeadImg) {
+        this.oldHeadImg = oldHeadImg;
     }
 
-    public String getTime() {
-        return time;
+    public MultipartFile getHeadImg() {
+        return headImg;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setHeadImg(MultipartFile headImg) {
+        this.headImg = headImg;
     }
 
     @Override
     public String toString() {
-        return "MessageVO{" +
-                "messageContent='" + messageContent + '\'' +
-                ", image=" + image +
-                ", userId=" + userId +
-                ", time='" + time + '\'' +
+        return "UserHead{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", oldHeadImg='" + oldHeadImg + '\'' +
+                ", headImg=" + headImg +
                 '}';
     }
 }

@@ -6,12 +6,129 @@
     <resultMap id="review" type="com.ztm.messageboard.entity.ReviewDO" >
         <id column="id" property="reviewId"/>
         <result column="user_id" property="userId"/>
+        <result column="name" property="userName"/>
+        <result column="head_img" property="headImg"/>
         <result column="review_content" property="reviewContent"/>
         <result column="reviewed_message_id" property="reviewedMessageId"/>
+        <result column="reviewed_review_id" property="reviewedReviewId"/>
     </resultMap>
-    <!--查询所有的留言信息-->
-    <select id="queryAllReviewData" resultMap="review">
-        SELECT id,user_id,review_content,reviewed_message_id
+    <resultMap id="reviewData" type="com.ztm.messageboard.entity.ReviewData" >
+        <id column="id" property="reviewId"/>
+        <result column="name" property="userName"/>
+        <result column="reviewed_content" property="reviewedContent"/>
+        <result column="review_content" property="reviewContent"/>
+    </resultMap>
+    <!--查询所有留言的留言评论-->
+    <select id="getAllMessageReview" resultMap="reviewData">
+        SELECT
+            review.id,
+            user.name,
+            message.message_content as reviewed_content,
+            review.review_content
+        from review,user,message
+        where review.user_id = user.id
+        AND review.reviewed_message_id = message.id
+        AND review.reviewed_review_id = 0
+    </select>
+    <!--查询该评论的所有评论-->
+    <select id="getRemarkReview" resultMap="reviewData">
+        SELECT
+            review.id,
+            user.NAME,
+            review.review_content
+        from review,user
+        where review.user_id = user.id
+        AND review.reviewed_review_id = #{reviewId}
+    </select>
+    <!--根据用户名查询评论-->
+    <select id="queryReviewDataByUserName" parameterType="String" resultMap="reviewData">
+        SELECT
+        review.id,
+        user.NAME,
+        message.message_content as reviewed_content,
+        review.review_content
+        from review,user,message
+        where review.user_id = user.id
+        AND review.reviewed_message_id = message.id
+        AND review.user_id
+		  IN (
+       		SELECT id FROM user WHERE name LIKE "%"#{userName}"%"
+		  )
+    </select>
+    <!--根据被评论的内容查询评论-->
+    <select id="queryMessageDataByReviewedContent" parameterType="String" resultMap="reviewData">
+        SELECT
+        review.id,
+        user.NAME,
+        message.message_content as reviewed_content,
+        review.review_content
+        from review,user,message
+        where review.user_id = user.id
+        AND review.reviewed_message_id = message.id
+        AND review.reviewed_message_id
+		  IN (
+       	    SELECT id FROM message WHERE message_content LIKE "%"#{reviewedContent}"%"
+		  )
+    </select>
+    <!--根据评论内容查询评论-->
+    <select id="queryMessageDataByReviewContent" parameterType="String" resultMap="reviewData">
+        SELECT
+            review.id,
+            user.NAME,
+            message.message_content as reviewed_content,
+            review.review_content
+        from review,user,message
+        where review.user_id = user.id
+        AND review.reviewed_message_id = message.id
+        AND review.review_content like "%"#{reviewContent}"%"
+    </select>
+    <!--查询所有的评论数据-->
+    <select id="queryAllReview" resultMap="review">
+        SELECT id,user_id,review_content,reviewed_message_id,reviewed_review_id
         from review
     </select>
+    <!--查询该留言所有评论-->
+    <select id="queryReview" parameterType="Long" resultMap="review">
+        SELECT
+        review.id,
+        user_id,
+        name,
+        head_img,
+        review_content,
+        reviewed_message_id,
+        reviewed_review_id
+        from review,user
+        where reviewed_message_id=#{messageId}
+        AND review.user_id = user.id
+        order by review.id desc
+    </select>
+    <!--保存评论-->
+    <insert id="addReview" parameterType="com.ztm.messageboard.entity.ReviewDO" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO review (user_id,review_content,reviewed_message_id)
+        VALUES (#{userId},#{reviewContent},#{reviewedMessageId})
+    </insert>
+    <!--保存评论的评论-->
+    <insert id="addPlusReview" parameterType="com.ztm.messageboard.entity.ReviewDO" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO review (user_id,review_content,reviewed_message_id,reviewed_review_id)
+        VALUES (#{userId},#{reviewContent},#{reviewedMessageId},#{reviewedReviewId})
+    </insert>
+    <!--删除留言的所有评论-->
+    <delete id="deleteMessageReview" parameterType="Long">
+        DELETE FROM review WHERE reviewed_message_id = #{messageId}
+    </delete>
+    <!--删除用户所有相关评论-->
+    <delete id="deleteUserAllReview" parameterType="Integer">
+        DELETE FROM review WHERE user_id = #{userId}
+    </delete>
+    <!--删除评论-->
+    <delete id="deleteReview" parameterType="Integer">
+        DELETE FROM review WHERE id = #{reviewId} or reviewed_review_id = #{reviewId}
+    </delete>
+    <!--修改评论内容-->
+    <update id="editReview" parameterType="com.ztm.messageboard.entity.ReviewData">
+        UPDATE review
+        SET
+        review_content = #{reviewContent}
+        WHERE id = #{reviewId}
+    </update>
 </mapper>
