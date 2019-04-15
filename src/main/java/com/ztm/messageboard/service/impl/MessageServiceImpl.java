@@ -28,28 +28,31 @@ public class MessageServiceImpl implements MessageService {
      *获取所有留言
      */
     @Override
-    public List<Content> getAllContent(){
+    public List<Content> getAllContent(MessageVO messageVO){
         List<MessageDO> messageDOS = messageDao.queryAllMessageData();
-        return DOtoContent(messageDOS);
+        return DOtoContent(messageDOS,messageVO.getUserId());
     }
     /**
      *获取分类下所有留言
      */
     @Override
-    public List<Content> getContent(String messageTabs){
+    public List<Content> getContent(MessageVO messageVO){
         List<MessageDO> messageDOS = messageDao.queryAllMessageData();
-        List<MessageDO> messageDOList = messageDOS.stream()
-                .filter(messageDO ->isTab(messageDO,messageTabs))
-                .collect(Collectors.toList());
-        return DOtoContent(messageDOList);
+        List<MessageDO> messageDOList = new ArrayList<>();
+        for(MessageDO messageDO : messageDOS){
+            if(isTab(messageDO,messageVO.getMessageTabs())){
+                messageDOList.add(messageDO);
+            }
+        }
+        return DOtoContent(messageDOList,messageVO.getUserId());
     }
     /**
      *关键字搜索内容
      */
     @Override
-    public List<Content> searchContent(String content){
-        List<MessageDO> messageDOS = messageDao.searchContent(content);
-        return DOtoContent(messageDOS);
+    public List<Content> searchContent(MessageVO messageVO){
+        List<MessageDO> messageDOS = messageDao.searchContent(messageVO.getMessageContent());
+        return DOtoContent(messageDOS,messageVO.getUserId());
     }
     /**
      *获取该用户留言
@@ -150,24 +153,34 @@ public class MessageServiceImpl implements MessageService {
                 List<MessageDO> messageDOList = messageDao.getUserMessage(userDO.getId());
                 messageDOS.addAll(messageDOList);
             }
-            return DOtoContent(messageDOS);
+            return DOtoContent(messageDOS,messageVO.getUserId());
         }else if(messageVO.getMessageContent()!= null){
             List<MessageDO> messageDOS = messageDao.queryMessageDataByContent(messageVO.getMessageContent());
-            return DOtoContent(messageDOS);
+            return DOtoContent(messageDOS,messageVO.getUserId());
         }else{
             List<MessageDO> messageDOList = messageDao.queryAllMessageData();
             List<MessageDO> messageDOS = messageDOList.stream()
                     .filter(messageDO -> isTime(messageDO,messageVO))
                     .collect(Collectors.toList());
-            return DOtoContent(messageDOS);
+            return DOtoContent(messageDOS,messageVO.getUserId());
         }
     }
     /**
      *点赞
      */
     @Override
-    public Integer addPraise(Long messageId){
-        return messageDao.addPraise(messageId);
+    public Integer addPraise(UserData userData){
+        String[] messageIdArray = userData.getPraiseList().split(",");
+        for(int i=0;i<messageIdArray.length-1;i++){
+            if (messageIdArray[i].equals(messageIdArray[messageIdArray.length-1])) {
+                return 0;
+            }
+        }
+        Long messageId = Long.parseLong(messageIdArray[messageIdArray.length-1]);
+        if(userDao.addPraiseMessage(userData).equals(1)){
+            return messageDao.addPraise(messageId);
+        }
+        return 0;
     }
 
     /**
@@ -213,30 +226,41 @@ public class MessageServiceImpl implements MessageService {
                                 .equals(messageDO.getMessageId().toString()))
                 .count();
         content.setReviewNumber(reviewNum);
-        content.setCollectionNumber(messageDO.getCollectionNumber());
         content.setTime(messageDO.getTime());
         return content;
     }
     /**
      *数据转换
      */
-    public List<Content> DOtoContent(List<MessageDO> messageDOS){
+    public List<Content> DOtoContent(List<MessageDO> messageDOS,Integer id){
         List<Content> contentList = new ArrayList<>();
+        UserDO userDO = userDao.queryUserPraiseList(id);
+        List<MessageDO> messageDOList1 = collectionDao.queryUserCollection(id);
         List<ReviewDO> reviewDOList = reviewDao.queryAllReview();
+        List<UserDO> userDOS = userDao.queryAllUserData();
         List<ReviewDO> reviewDOS = reviewDOList.stream()
                 .filter(reviewDO -> reviewDO.getReviewedReviewId().equals(0))
                 .collect(Collectors.toList());
-        List<UserDO> userDOS = userDao.queryAllUserData();
         for(MessageDO messageDO : messageDOS){
             Content content = changeData(messageDO,reviewDOS);
+            if (messageDOList1 != null) {
+                Long i = messageDOList1.stream()
+                        .filter(messageDOO -> messageDOO.getMessageId().equals(messageDO.getMessageId()))
+                        .count();
+                if(i.equals(1L)){
+                    content.setIsCollection("#f17703");
+                }
+            }
             List<UserDO> userList = userDOS.stream()
-                    .filter(userDO -> userDO.getId().equals(messageDO.getUserId()))
+                    .filter(userDO1 -> userDO1.getId().equals(messageDO.getUserId()))
                     .collect(Collectors.toList());
+            Long collectionNum = collectionDao.queryUserCollectionByMeId(messageDO.getMessageId());
+            content.setCollectionNumber(collectionNum);
             content.setUserName(userList.get(0).getUserName());
             content.setHeadImg(userList.get(0).getHeadImg());
             contentList.add(content);
         }
-        return contentList;
+        return addColor(contentList,userDO);
     }
     /**
      *判断是否在该时间范围内
@@ -257,15 +281,36 @@ public class MessageServiceImpl implements MessageService {
      *查找该类型留言
      */
     public Boolean isTab(MessageDO messageDO,String messageTabs){
-        Boolean isFlag = false;
         String tabs = messageDO.getMessageTabs();
         String[] tabList = tabs.split(",");
-        for(int i = 0;i<tabList.length; i++){
-            if(tabList[i].equals(messageTabs)){
-                isFlag = true;
+        for(int i = 0;i < tabList.length; i++){
+            if(messageTabs.equals(tabList[i])){
+                return true;
             }
         }
-        return isFlag;
+        return false;
     }
+
+    /**
+     *实现点赞颜色改变
+     */
+    public List<Content> addColor(List<Content> contentList,UserDO userDO){
+        String[] messageIdList = null;
+        if(userDO != null && userDO.getPraiseList() != null){
+            messageIdList = userDO.getPraiseList().split(",");
+        }
+        for(Content content : contentList){
+            if (messageIdList != null) {
+                for(String ss : messageIdList) {
+                    Long lon = Long.parseLong(ss);
+                    if (lon.equals(content.getMessageId())) {
+                        content.setIsPraise("#ff0000");
+                    }
+                }
+            }
+        }
+        return contentList;
+    }
+
 
 }

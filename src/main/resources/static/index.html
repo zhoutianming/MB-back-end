@@ -1,1 +1,22 @@
-<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><link rel=stylesheet href=http://at.alicdn.com/t/font_830376_qzecyukz0s.css><title>vue-manage-system</title><link href=css/app.fcac98c3.css rel=preload as=style><link href=css/chunk-vendors.644d128a.css rel=preload as=style><link href=js/app.0e0804ca.js rel=preload as=script><link href=js/chunk-vendors.846ac9ac.js rel=preload as=script><link href=css/chunk-vendors.644d128a.css rel=stylesheet><link href=css/app.fcac98c3.css rel=stylesheet></head><body><noscript><strong>We're sorry but vms doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=js/chunk-vendors.846ac9ac.js></script><script src=js/app.0e0804ca.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>demo</title><link href=/static/css/app.2dcd8b0990db43c228743ddbeb457c04.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/js/manifest.2ae2e69a05c33dfc65f8.js></script><script type=text/javascript src=/static/js/vendor.0e6c26ef2690c180548f.js></script><script type=text/javascript src=/static/js/app.a771adde9b7984a50dd6.js></script></body><script>mui.init({
+      keyEventBind: {
+        backbutton: true  //关闭back按键监听
+      }
+    });
+    // //首页返回键处理
+    // //处理逻辑：1秒内，连续两次按返回键，则退出应用；
+    var first = null;
+    mui.back = function() {
+      //首次按键，提示  再按一次退出应用
+      if (!first) {
+          first = new Date().getTime();//记录第一次按下回退键的时间
+          history.go(-1)//回退到上一页面
+          setTimeout(function() {//1s中后清除
+              first = null;
+          }, 1000);
+      } else {
+        if (new Date().getTime() - first < 1000) {//如果两次按下的时间小于1s，
+            plus.runtime.quit();//那么就退出app
+        } 
+      }
+    };</script></html>

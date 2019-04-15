@@ -18,11 +18,14 @@ public class UserDO {
      * 用户类型
      */
     private Integer type;
-
     /**
      * 用户头像
      */
     private String headImg;
+    /**
+     * 用户点赞列表
+     */
+    private String praiseList;
 
     public UserDO() {
     }
@@ -67,6 +70,14 @@ public class UserDO {
         this.headImg = headImg;
     }
 
+    public String getPraiseList() {
+        return praiseList;
+    }
+
+    public void setPraiseList(String praiseList) {
+        this.praiseList = praiseList;
+    }
+
     @Override
     public String toString() {
         return "UserDO{" +
@@ -75,6 +86,7 @@ public class UserDO {
                 ", password='" + password + '\'' +
                 ", type=" + type +
                 ", headImg='" + headImg + '\'' +
+                ", praiseList='" + praiseList + '\'' +
                 '}';
     }
 }

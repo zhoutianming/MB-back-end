@@ -1,10 +1,7 @@
 package com.ztm.messageboard.service.impl;
 
 import com.ztm.messageboard.dao.*;
-import com.ztm.messageboard.entity.CarePerson;
-import com.ztm.messageboard.entity.CarePersonDO;
-import com.ztm.messageboard.entity.UserDO;
-import com.ztm.messageboard.entity.UserData;
+import com.ztm.messageboard.entity.*;
 import com.ztm.messageboard.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,12 +63,20 @@ public class UserServiceImpl implements UserService {
         return userDao.deleteUserData(userId);
     }
     /**
+     *修改用户名
+     */
+    @Override
+    public Integer editUserName(UserData userData){
+        return userDao.editUserName(userData);
+    }
+    /**
      *修改用户头像和用户名
      */
     @Override
     public Integer editUser(UserData userData){
         return userDao.editUser(userData);
     }
+
     /**
      * 修改用户权限
      */
@@ -129,5 +134,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer unfollow(CarePersonDO carePersonDO){
         return userDao.unfollow(carePersonDO);
+    }
+
+    /**
+     *取消关注
+     */
+    @Override
+    public Integer unCollection(MessageVO messageVO){
+        return collectionDao.unCollection(messageVO);
     }
 }

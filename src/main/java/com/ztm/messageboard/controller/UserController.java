@@ -49,7 +49,7 @@ public class UserController {
             result.setCode(-2);
         }else if (userDO.getUserName().equals(userVO.getName()) //管理员登陆成功
                 && userDO.getPassword().equals(userVO.getPassword())
-        && userDO.getType().equals(2)) {
+                && userDO.getType().equals(2)) {
             UserData userData = new UserData();
             userData.setId(userDO.getId());
             userData.setUserName(userDO.getUserName());
@@ -162,6 +162,7 @@ public class UserController {
         userData.setType(userDO.getType());
         userData.setUserName(userDO.getUserName());
         userData.setHeadImg(userDO.getHeadImg());
+        userData.setPraiseList(userDO.getPraiseList());
         List<UserDO> userDOS = userDao.getCarePerson(userDO.getId());
         Long careNum = userDOS.stream()
                 .count();
@@ -184,13 +185,19 @@ public class UserController {
     @RequestMapping(value = "/editUser", method = RequestMethod.POST)
     @ResponseBody
     public Result editUser(UserHead userHead) {
-        String filename = ImageUtil.add(userHead.getHeadImg(),headImagePath,"/head/",domainName);
         Result result = new Result();
         UserData userData = new UserData();
         userData.setId(userHead.getId());
         userData.setUserName(userHead.getUserName());
-        userData.setHeadImg(filename);
-        Integer i = userService.editUser(userData);
+        Integer i;
+        if(userHead.getHeadImg() != null) {
+            String filename = ImageUtil.add(userHead.getHeadImg(), headImagePath, "/head/", domainName);
+            userData.setHeadImg(filename);
+            ImageUtil.deleteImage(userHead.getOldHeadImg(),domainName);
+            i = userService.editUser(userData);
+        } else {
+            i = userService.editUserName(userData);
+        }
         if(i.equals(1)){
             result.setData(userData);
         }
@@ -231,6 +238,19 @@ public class UserController {
     public Result unfollow(@RequestBody CarePersonDO carePersonDO) {
         Result result = new Result();
         Integer num = userService.unfollow(carePersonDO);
+        result.setCode(num);
+        return result;
+    }
+
+    /**
+     * 取消收藏
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/unCollection", method = RequestMethod.POST)
+    @ResponseBody
+    public Result unCollection(@RequestBody MessageVO messageVO) {
+        Result result = new Result();
+        Integer num = userService.unCollection(messageVO);
         result.setCode(num);
         return result;
     }

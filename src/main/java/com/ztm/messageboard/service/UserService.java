@@ -1,9 +1,6 @@
 package com.ztm.messageboard.service;
 
-import com.ztm.messageboard.entity.CarePerson;
-import com.ztm.messageboard.entity.CarePersonDO;
-import com.ztm.messageboard.entity.UserDO;
-import com.ztm.messageboard.entity.UserData;
+import com.ztm.messageboard.entity.*;
 
 import java.util.List;
 
@@ -29,6 +26,10 @@ public interface UserService {
      */
     Integer deleteUserData(Integer userId);
     /**
+     *修改用户名
+     */
+    Integer editUserName(UserData userData);
+    /**
      *修改用户头像和用户名
      */
     Integer editUser(UserData userData);
@@ -48,4 +49,8 @@ public interface UserService {
      *取消关注
      */
     Integer unfollow(CarePersonDO carePersonDO);
+    /**
+     *取消收藏
+     */
+    Integer unCollection(MessageVO messageVO);
 }

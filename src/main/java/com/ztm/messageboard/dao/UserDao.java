@@ -1,6 +1,7 @@
 package com.ztm.messageboard.dao;
 
 import com.ztm.messageboard.entity.CarePersonDO;
+import com.ztm.messageboard.entity.MessageVO;
 import com.ztm.messageboard.entity.UserDO;
 import com.ztm.messageboard.entity.UserData;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,10 @@ public interface UserDao {
      *查询该用户信息
     */
     UserDO queryUser(String userName);
+    /**
+     *查询该用户点赞列表
+     */
+    UserDO queryUserPraiseList(Integer userId);
     /**
      *模糊查询该用户信息
      */
@@ -37,6 +42,10 @@ public interface UserDao {
      *根据权限查询用户
      */
     List<UserDO> queryUserDataByType(Integer type);
+    /**
+     *修改用户名
+     */
+    Integer editUserName(UserData userData);
     /**
      *修改用户头像和用户名
      */
@@ -65,4 +74,8 @@ public interface UserDao {
      *取消关注
      */
     Integer unfollow(CarePersonDO carePersonDO);
+    /**
+     *添加点赞留言
+     */
+    Integer addPraiseMessage(UserData userData);
 }

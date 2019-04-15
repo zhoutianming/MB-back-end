@@ -41,7 +41,6 @@ public class ImageUtil {
         Boolean flag = false;
         String sonPath = imagePath.replace(domainName,"");
         String filePath = "D://MBDataBase"+sonPath;
-        System.out.println(filePath);
         File file = new File(filePath);
         // 路径为文件且不为空则进行删除
         if (file.isFile() && file.exists()) {

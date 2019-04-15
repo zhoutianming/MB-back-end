@@ -36,6 +36,10 @@ public class UserData {
      * 用户点赞数
      */
     private Long praisedNum;
+    /**
+     * 用户点赞列表
+     */
+    private String praiseList;
 
     public UserData() {
     }
@@ -104,6 +108,14 @@ public class UserData {
         this.praisedNum = praisedNum;
     }
 
+    public String getPraiseList() {
+        return praiseList;
+    }
+
+    public void setPraiseList(String praiseList) {
+        this.praiseList = praiseList;
+    }
+
     @Override
     public String toString() {
         return "UserData{" +
@@ -115,6 +127,7 @@ public class UserData {
                 ", collectionNum=" + collectionNum +
                 ", beCaredNum=" + beCaredNum +
                 ", praisedNum=" + praisedNum +
+                ", praiseList='" + praiseList + '\'' +
                 '}';
     }
 }

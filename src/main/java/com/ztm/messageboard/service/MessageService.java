@@ -8,15 +8,15 @@ public interface MessageService {
     /**
      *获取所有留言
      */
-    List<Content> getAllContent();
+    List<Content> getAllContent(MessageVO messageVO);
     /**
      *获取分类所有留言
      */
-    List<Content> getContent(String messageTabs);
+    List<Content> getContent(MessageVO messageVO);
     /**
      *关键字搜索内容
      */
-    List<Content> searchContent(String content);
+    List<Content> searchContent(MessageVO messageVO);
     /**
      *获取该用户留言
      */
@@ -53,7 +53,7 @@ public interface MessageService {
     /**
      *点赞
      */
-    Integer addPraise(Long messageId);
+    Integer addPraise(UserData userData);
     /**
      *收藏
      */

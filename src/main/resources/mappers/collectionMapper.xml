@@ -3,6 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ztm.messageboard.dao.CollectionDao">
+    <resultMap id="message" type="com.ztm.messageboard.entity.MessageDO" >
+        <id column="message_id" property="messageId"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+    <!--查询所有收藏-->
+    <select id="queryAllCollection" resultMap="message">
+        SELECT
+        user_id,
+        message_id
+        from collection
+    </select>
+    <!--查询该用户收藏-->
+    <select id="queryUserCollection" parameterType="Integer" resultMap="message">
+        SELECT
+        user_id,
+        message_id
+        from collection where user_id = #{userId}
+    </select>
+    <!--查询该用户收藏-->
+    <select id="queryUserCollectionByMeId" parameterType="Long" resultType="Long">
+        SELECT COUNT(id) from collection where message_id = #{messageId}
+    </select>
     <!--删除用户及所有相关数据-->
     <delete id="delete" parameterType="Integer">
        delete from collection WHERE  user_id = #{userId}
@@ -10,5 +32,9 @@
     <!--删除留言-->
     <delete id="deleteMessage" parameterType="Long">
         DELETE FROM collection WHERE message_id = #{messageId}
+    </delete>
+    <!--取消收藏-->
+    <delete id="unCollection" parameterType="com.ztm.messageboard.entity.MessageVO">
+        DELETE FROM collection WHERE message_id = #{messageId} and message_id = #{messageId}
     </delete>
 </mapper>

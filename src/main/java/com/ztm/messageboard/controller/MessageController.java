@@ -32,9 +32,9 @@ public class MessageController {
     @CrossOrigin
     @RequestMapping(value = "/getAllMessage", method = RequestMethod.POST)
     @ResponseBody
-    public Result getAllMessage() {
+    public Result getAllMessage(@RequestBody MessageVO messageVO) {
         Result result = new Result();
-        List<Content> contentList = messageService.getAllContent();
+        List<Content> contentList = messageService.getAllContent(messageVO);
         result.setData(contentList);
         return result;
     }
@@ -46,7 +46,7 @@ public class MessageController {
     @ResponseBody
     public Result getTabAllMessage(@RequestBody MessageVO messageVO) {
         Result result = new Result();
-        List<Content> contentList = messageService.getContent(messageVO.getMessageTabs());
+        List<Content> contentList = messageService.getContent(messageVO);
         result.setData(contentList);
         return result;
     }
@@ -59,7 +59,7 @@ public class MessageController {
     @ResponseBody
     public Result search(@RequestBody MessageVO messageVO) {
         Result result = new Result();
-        List<Content> contentList = messageService.searchContent(messageVO.getMessageContent());
+        List<Content> contentList = messageService.searchContent(messageVO);
         result.setData(contentList);
         return result;
     }
@@ -216,12 +216,10 @@ public class MessageController {
     @CrossOrigin
     @RequestMapping(value = "/addPraise", method = RequestMethod.POST)
     @ResponseBody
-    public Result addPraise(@RequestBody MessageVO messageVO) {
+    public Result addPraise(@RequestBody UserData userData) {
         Result result = new Result();
-        Integer num = messageService.addPraise(messageVO.getMessageId());
-        if(num.equals(1)){
-            result.setMessage("ok");
-        }
+        Integer num = messageService.addPraise(userData);
+        result.setCode(num);
         return result;
     }
 

@@ -9,10 +9,15 @@
         <result column="password" property="password"/>
         <result column="type" property="type"/>
         <result column="head_img" property="headImg"/>
+        <result column="praise_list" property="praiseList"/>
     </resultMap>
     <!--登录时查询用户信息-->
     <select id="queryUser" parameterType="String" resultMap="userDO">
-        SELECT id,NAME,PASSWORD,TYPE,head_img from user WHERE NAME = #{userName}
+        SELECT id,NAME,PASSWORD,TYPE,head_img,praise_list from user WHERE NAME = #{userName}
+    </select>
+    <!--查询用户点赞列表-->
+    <select id="queryUserPraiseList" parameterType="Integer" resultMap="userDO">
+        SELECT id,praise_list from user WHERE id = #{userId}
     </select>
     <select id="queryUserList" parameterType="String" resultMap="userDO">
         SELECT id,NAME,TYPE,head_img from user WHERE NAME like "%"#{userName}"%"
@@ -38,6 +43,9 @@
     <!--编辑用户-->
     <update id="editUser" parameterType="com.ztm.messageboard.entity.UserData">
        update user SET NAME = #{userName},head_img = #{headImg}WHERE  id = #{id}
+    </update>
+    <update id="editUserName" parameterType="com.ztm.messageboard.entity.UserData">
+       update user SET NAME = #{userName} WHERE  id = #{id}
     </update>
     <!--修改用户权限-->
     <update id="editUserType" parameterType="com.ztm.messageboard.entity.UserData">
@@ -74,4 +82,9 @@
     <delete id="unfollow" parameterType="com.ztm.messageboard.entity.CarePersonDO">
       delete from care_person WHERE  user_id = #{userId} and care_person_id = #{carePersonId}
     </delete>
+
+    <!--添加点赞留言-->
+    <update id="addPraiseMessage" parameterType="com.ztm.messageboard.entity.UserData">
+       update user SET praise_list = #{praiseList} WHERE  id = #{id}
+    </update>
 </mapper>

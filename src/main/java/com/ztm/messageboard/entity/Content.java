@@ -53,8 +53,18 @@ public class Content {
      * 留言人头像
      */
     private String headImg;
+    /**
+     * 是否点赞过
+     */
+    private String isPraise;
+    /**
+     * 是否收藏过
+     */
+    private String isCollection;
 
     public Content() {
+        this.isPraise = "#ffffff";
+        this.isCollection = "#ffffff";
     }
 
     public Long getMessageId() {
@@ -161,6 +171,22 @@ public class Content {
         this.headImg = headImg;
     }
 
+    public String getIsPraise() {
+        return isPraise;
+    }
+
+    public void setIsPraise(String isPraise) {
+        this.isPraise = isPraise;
+    }
+
+    public String getIsCollection() {
+        return isCollection;
+    }
+
+    public void setIsCollection(String isCollection) {
+        this.isCollection = isCollection;
+    }
+
     @Override
     public String toString() {
         return "Content{" +
@@ -177,6 +203,8 @@ public class Content {
                 ", userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", headImg='" + headImg + '\'' +
+                ", isPraise='" + isPraise + '\'' +
+                ", isCollection='" + isCollection + '\'' +
                 '}';
     }
 }
