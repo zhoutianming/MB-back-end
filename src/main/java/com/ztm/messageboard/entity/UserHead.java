@@ -12,6 +12,10 @@ public class UserHead {
      */
     private String userName;
     /**
+     * 密码
+     */
+    private String password;
+    /**
      * 用户旧头像
      */
     private String oldHeadImg;
@@ -39,6 +43,14 @@ public class UserHead {
         this.userName = userName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getOldHeadImg() {
         return oldHeadImg;
     }
@@ -60,6 +72,7 @@ public class UserHead {
         return "UserHead{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 ", oldHeadImg='" + oldHeadImg + '\'' +
                 ", headImg=" + headImg +
                 '}';

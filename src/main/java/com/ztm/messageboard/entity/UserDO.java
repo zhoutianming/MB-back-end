@@ -26,8 +26,18 @@ public class UserDO {
      * 用户点赞列表
      */
     private String praiseList;
+    /**
+     * 点赞涨幅数
+     */
+    private Long praiseAdditions;
+    /**
+     * 关注涨幅数
+     */
+    private Long caredAdditions;
 
     public UserDO() {
+        this.praiseAdditions = 0L;
+        this.caredAdditions = 0L;
     }
 
     public Integer getId() {
@@ -78,6 +88,22 @@ public class UserDO {
         this.praiseList = praiseList;
     }
 
+    public Long getPraiseAdditions() {
+        return praiseAdditions;
+    }
+
+    public void setPraiseAdditions(Long praiseAdditions) {
+        this.praiseAdditions = praiseAdditions;
+    }
+
+    public Long getCaredAdditions() {
+        return caredAdditions;
+    }
+
+    public void setCaredAdditions(Long caredAdditions) {
+        this.caredAdditions = caredAdditions;
+    }
+
     @Override
     public String toString() {
         return "UserDO{" +
@@ -87,6 +113,8 @@ public class UserDO {
                 ", type=" + type +
                 ", headImg='" + headImg + '\'' +
                 ", praiseList='" + praiseList + '\'' +
+                ", praiseAdditions=" + praiseAdditions +
+                ", caredAdditions=" + caredAdditions +
                 '}';
     }
 }

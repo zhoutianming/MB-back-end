@@ -178,6 +178,7 @@ public class MessageServiceImpl implements MessageService {
         }
         Long messageId = Long.parseLong(messageIdArray[messageIdArray.length-1]);
         if(userDao.addPraiseMessage(userData).equals(1)){
+            userDao.addPraiseAdditions(userData.getPraisedUserId());
             return messageDao.addPraise(messageId);
         }
         return 0;

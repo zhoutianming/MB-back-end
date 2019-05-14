@@ -9,6 +9,10 @@ public class UserData {
      * 用户名
      */
     private String userName;
+    /**
+     * 密码
+     */
+    private String password;
 
     /**
      * 用户类型
@@ -40,8 +44,22 @@ public class UserData {
      * 用户点赞列表
      */
     private String praiseList;
+    /**
+     * 被点赞用户id
+     */
+    private Integer praisedUserId;
+    /**
+     * 点赞涨幅数
+     */
+    private Long praiseAdditions;
+    /**
+     * 关注涨幅数
+     */
+    private Long caredAdditions;
 
     public UserData() {
+        this.praiseAdditions = 0L;
+        this.caredAdditions = 0L;
     }
 
     public Integer getId() {
@@ -58,6 +76,14 @@ public class UserData {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Integer getType() {
@@ -116,11 +142,36 @@ public class UserData {
         this.praiseList = praiseList;
     }
 
+    public Integer getPraisedUserId() {
+        return praisedUserId;
+    }
+
+    public void setPraisedUserId(Integer praisedUserId) {
+        this.praisedUserId = praisedUserId;
+    }
+
+    public Long getPraiseAdditions() {
+        return praiseAdditions;
+    }
+
+    public void setPraiseAdditions(Long praiseAdditions) {
+        this.praiseAdditions = praiseAdditions;
+    }
+
+    public Long getCaredAdditions() {
+        return caredAdditions;
+    }
+
+    public void setCaredAdditions(Long caredAdditions) {
+        this.caredAdditions = caredAdditions;
+    }
+
     @Override
     public String toString() {
         return "UserData{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 ", type=" + type +
                 ", headImg='" + headImg + '\'' +
                 ", carePersonNum=" + carePersonNum +
@@ -128,6 +179,9 @@ public class UserData {
                 ", beCaredNum=" + beCaredNum +
                 ", praisedNum=" + praisedNum +
                 ", praiseList='" + praiseList + '\'' +
+                ", praisedUserId=" + praisedUserId +
+                ", praiseAdditions=" + praiseAdditions +
+                ", caredAdditions=" + caredAdditions +
                 '}';
     }
 }

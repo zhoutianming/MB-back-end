@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 @RestController
@@ -30,8 +28,6 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private MessageDao messageDao;
-    @Autowired
     private UserDao userDao;
 
     /**
@@ -42,26 +38,18 @@ public class UserController {
     @ResponseBody
     public Result login(@RequestBody UserVO userVO) {
         Result result = new Result();
-        UserDO userDO = userService.getUser(userVO.getName());
-        if (userDO == null) { //用户不存在
+        UserData userData = userService.getUser(userVO.getName());
+        if (userData.getUserName() == null) { //用户不存在
             result.setCode(-1);
-        }else if (!userDO.getPassword().equals(userVO.getPassword().toString())) { //密码错误
+        }else if (!userData.getPassword().equals(userVO.getPassword().toString())) { //密码错误
             result.setCode(-2);
-        }else if (userDO.getUserName().equals(userVO.getName()) //管理员登陆成功
-                && userDO.getPassword().equals(userVO.getPassword())
-                && userDO.getType().equals(2)) {
-            UserData userData = new UserData();
-            userData.setId(userDO.getId());
-            userData.setUserName(userDO.getUserName());
-            userData.setHeadImg(userDO.getHeadImg());
+        }else if (userData.getUserName().equals(userVO.getName()) //管理员登陆成功
+                && userData.getPassword().equals(userVO.getPassword())
+                && userData.getType().equals(2)) {
             result.setCode(2);
             result.setData(userData);
         }
         else{ //普通用户登陆成功
-            UserData userData = new UserData();
-            userData.setId(userDO.getId());
-            userData.setUserName(userDO.getUserName());
-            userData.setHeadImg(userDO.getHeadImg());
             result.setCode(1);
             result.setData(userData);
         }
@@ -74,15 +62,16 @@ public class UserController {
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public Result register(@RequestBody UserVO userVO) {
+    public Result register(UserHead userHead) {
         Result result = new Result();
         UserDO userDO = new UserDO();
-        userDO.setUserName(userVO.getName());
-        userDO.setPassword(userVO.getPassword());
-        Integer number = userService.addUser(userDO);
-        if(number.equals(1)){
-            result.setMessage("ok");
+        userDO.setUserName(userHead.getUserName());
+        userDO.setPassword(userHead.getPassword());
+        if(userHead.getHeadImg() != null) {
+            String filename = ImageUtil.add(userHead.getHeadImg(), headImagePath, "/head/", domainName);
+            userDO.setHeadImg(filename);
         }
+        result.setCode(userService.addUser(userDO));
         return result;
     }
 
@@ -156,25 +145,7 @@ public class UserController {
     @ResponseBody
     public Result getUser(@RequestBody UserData user) {
         Result result = new Result();
-        UserDO userDO = userService.getUser(user.getUserName());
-        UserData userData = new UserData();
-        userData.setId(userDO.getId());
-        userData.setType(userDO.getType());
-        userData.setUserName(userDO.getUserName());
-        userData.setHeadImg(userDO.getHeadImg());
-        userData.setPraiseList(userDO.getPraiseList());
-        List<UserDO> userDOS = userDao.getCarePerson(userDO.getId());
-        Long careNum = userDOS.stream()
-                .count();
-        userData.setCarePersonNum(careNum);
-        List<MessageDO> messageDOS =messageDao.getUserCollection(userDO.getId());
-        Long collectionNum = messageDOS.stream()
-                .count();
-        userData.setCollectionNum(collectionNum);
-        Long caredNum = messageDao.getBeCaredNum(userDO.getId());
-        userData.setBeCaredNum(caredNum);
-        Long praisedNum = messageDao.getPraiseNum(userDO.getId());
-        userData.setPraisedNum(praisedNum);
+        UserData userData = userService.getUser(user.getUserName());
         result.setData(userData);
         return result;
     }
@@ -188,19 +159,40 @@ public class UserController {
         Result result = new Result();
         UserData userData = new UserData();
         userData.setId(userHead.getId());
-        userData.setUserName(userHead.getUserName());
-        Integer i;
         if(userHead.getHeadImg() != null) {
             String filename = ImageUtil.add(userHead.getHeadImg(), headImagePath, "/head/", domainName);
             userData.setHeadImg(filename);
-            ImageUtil.deleteImage(userHead.getOldHeadImg(),domainName);
-            i = userService.editUser(userData);
+            UserDO userDO = userDao.queryUserById(userData.getId());
+            Integer in;
+            if (userHead.getUserName() == null) {
+                in = userDao.editUserHeadImage(userData);
+            } else {
+                userData.setUserName(userHead.getUserName());
+                in = userService.editUser(userData);
+            }
+            if (in == 1) {
+                while (userDO.getHeadImg() != null){
+                    ImageUtil.deleteImage(userDO.getHeadImg(), domainName);
+                }
+            }
+            result.setCode(in);
         } else {
-            i = userService.editUserName(userData);
+            userData.setUserName(userHead.getUserName());
+            result.setCode(userService.editUserName(userData));
         }
-        if(i.equals(1)){
-            result.setData(userData);
-        }
+        result.setData(userData);
+        return result;
+    }
+
+    /**
+     * 修改密码
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/editPassword", method = RequestMethod.POST)
+    @ResponseBody
+    public Result editPassword(@RequestBody UserVO userVO) {
+        Result result = new Result();
+        result.setCode(userService.editPassword(userVO));
         return result;
     }
 
@@ -251,6 +243,30 @@ public class UserController {
     public Result unCollection(@RequestBody MessageVO messageVO) {
         Result result = new Result();
         Integer num = userService.unCollection(messageVO);
+        result.setCode(num);
+        return result;
+    }
+    /**
+     * 取消关注增长数
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/cancelShowCared", method = RequestMethod.POST)
+    @ResponseBody
+    public Result cancelShowCaredAdditions(@RequestBody UserVO userVO) {
+        Result result = new Result();
+        Integer num = userService.unShowCared(userVO.getUserId());
+        result.setCode(num);
+        return result;
+    }
+    /**
+     * 取消点赞增长数
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/cancelShowPraise", method = RequestMethod.POST)
+    @ResponseBody
+    public Result cancelShowPraiseAdditions(@RequestBody UserVO userVO) {
+        Result result = new Result();
+        Integer num = userService.unShowPraise(userVO.getUserId());
         result.setCode(num);
         return result;
     }

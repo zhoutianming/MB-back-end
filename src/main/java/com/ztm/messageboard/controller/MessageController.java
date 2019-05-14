@@ -1,5 +1,6 @@
 package com.ztm.messageboard.controller;
 
+import com.ztm.messageboard.dao.MessageDao;
 import com.ztm.messageboard.entity.*;
 import com.ztm.messageboard.service.MessageService;
 import com.ztm.messageboard.utils.ImageUtil;
@@ -26,6 +27,8 @@ public class MessageController {
     private String messageImagePath;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private MessageDao messageDao;
     /**
      * 获取所有留言内容
      */
@@ -131,7 +134,7 @@ public class MessageController {
     }
 
     /**
-     *条件查询用户信息
+     *条件查询留言信息
      */
     @CrossOrigin
     @RequestMapping(value = "/selectMessage", method = RequestMethod.POST)
@@ -185,10 +188,14 @@ public class MessageController {
         messageDO.setImageWidth(messageVO.getImageWidth());
         messageDO.setImageHeight(messageVO.getImageHeight());
         messageDO.setUserId(messageVO.getUserId());
+        MessageDO messageDO1 = messageDao.queryMessageById(messageVO.getMessageId());
         Integer num = messageService.editMessage(messageDO);
-        if(num.equals(1)){
-            result.setCode(1);
+        if (num == 1) {
+            if (messageDO1.getMessageImg() != null){
+                ImageUtil.deleteImage(messageDO1.getMessageImg(), domainName);
+            }
         }
+        result.setCode(num);
         return result;
     }
 
@@ -198,7 +205,7 @@ public class MessageController {
     @CrossOrigin
     @RequestMapping(value = "/editMessageText", method = RequestMethod.POST)
     @ResponseBody
-    public Result editMessageText(@RequestBody MessageVO messageVO) {
+    public Result editMessageText(MessageVO messageVO) {
         Result result = new Result();
         MessageDO messageDO = new MessageDO();
         messageDO.setMessageId(messageVO.getMessageId());

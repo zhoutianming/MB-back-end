@@ -8,7 +8,7 @@ public interface UserService {
     /**
      *查询该用户信息
      */
-    UserDO getUser(String userName);
+    UserData getUser(String userName);
     /**
      *查询所有用户信息
      */
@@ -38,6 +38,10 @@ public interface UserService {
      */
     Integer editUserType(UserData userData);
     /**
+     * 修改密码
+     */
+    Integer editPassword(UserVO userVO);
+    /**
      *添加关注的人
      */
     Integer addCarePerson(CarePersonDO carePersonDO);
@@ -53,4 +57,12 @@ public interface UserService {
      *取消收藏
      */
     Integer unCollection(MessageVO messageVO);
+    /**
+     *取消关注增长数
+     */
+    Integer unShowCared(Integer userId);
+    /**
+     *取消点赞增长数
+     */
+    Integer unShowPraise(Integer userId);
 }

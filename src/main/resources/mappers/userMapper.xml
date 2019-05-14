@@ -10,10 +10,18 @@
         <result column="type" property="type"/>
         <result column="head_img" property="headImg"/>
         <result column="praise_list" property="praiseList"/>
+        <result column="praise_additions" property="praiseAdditions"/>
+        <result column="cared_additions" property="caredAdditions"/>
     </resultMap>
-    <!--登录时查询用户信息-->
+    <!--查询用户信息-->
     <select id="queryUser" parameterType="String" resultMap="userDO">
-        SELECT id,NAME,PASSWORD,TYPE,head_img,praise_list from user WHERE NAME = #{userName}
+        SELECT id,NAME,PASSWORD,TYPE,head_img,praise_list,praise_additions,cared_additions
+        from user WHERE NAME = #{userName}
+    </select>
+    <!--查询用户信息-->
+    <select id="queryUserById" parameterType="Integer" resultMap="userDO">
+        SELECT id,NAME,TYPE,head_img,praise_list,praise_additions,cared_additions
+        from user WHERE id = #{id}
     </select>
     <!--查询用户点赞列表-->
     <select id="queryUserPraiseList" parameterType="Integer" resultMap="userDO">
@@ -36,20 +44,28 @@
     </select>
     <!--添加用户-->
     <insert id="insertUser" parameterType="com.ztm.messageboard.entity.UserDO">
-        INSERT INTO user (NAME,PASSWORD) VALUES (
-        #{userName},#{password}
-        )
+        INSERT INTO user (NAME,PASSWORD,head_img)
+        VALUES (#{userName},#{password},#{headImg})
     </insert>
     <!--编辑用户-->
     <update id="editUser" parameterType="com.ztm.messageboard.entity.UserData">
        update user SET NAME = #{userName},head_img = #{headImg}WHERE  id = #{id}
     </update>
+    <!--修改用户名-->
     <update id="editUserName" parameterType="com.ztm.messageboard.entity.UserData">
        update user SET NAME = #{userName} WHERE  id = #{id}
+    </update>
+    <!--修改用户头像-->
+    <update id="editUserHeadImage" parameterType="com.ztm.messageboard.entity.UserData">
+       update user SET head_img = #{headImg} WHERE  id = #{id}
     </update>
     <!--修改用户权限-->
     <update id="editUserType" parameterType="com.ztm.messageboard.entity.UserData">
        update user SET type = #{type} WHERE  id = #{id}
+    </update>
+    <!--修改密码-->
+    <update id="editPassword" parameterType="com.ztm.messageboard.entity.UserVO">
+       update user SET password = #{newPassword} WHERE  name = #{name}
     </update>
     <!--删除用户及所有相关数据-->
     <delete id="deleteUserData" parameterType="Integer">
@@ -82,9 +98,28 @@
     <delete id="unfollow" parameterType="com.ztm.messageboard.entity.CarePersonDO">
       delete from care_person WHERE  user_id = #{userId} and care_person_id = #{carePersonId}
     </delete>
-
     <!--添加点赞留言-->
     <update id="addPraiseMessage" parameterType="com.ztm.messageboard.entity.UserData">
        update user SET praise_list = #{praiseList} WHERE  id = #{id}
+    </update>
+    <!--增加关注增长数-->
+    <update id="addCaredAdditions" parameterType="Integer">
+       update user SET cared_additions = cared_additions + 1 WHERE  id = #{caredUserId}
+    </update>
+    <!--减少关注增长数-->
+    <update id="reduceCaredAdditions" parameterType="Integer">
+       update user SET cared_additions = cared_additions - 1 WHERE  id = #{caredUserId} AND cared_additions > 0
+    </update>
+    <!--添加点赞增长数-->
+    <update id="addPraiseAdditions" parameterType="Integer">
+       update user SET praise_additions = praise_additions + 1 WHERE  id = #{praisedUserId}
+    </update>
+    <!--取消关注增长数-->
+    <update id="unShowCared" parameterType="Integer">
+       update user SET cared_additions = 0 WHERE  id = #{userId}
+    </update>
+    <!--取消点赞增长数-->
+    <update id="unShowPraise" parameterType="Integer">
+       update user SET praise_additions = 0 WHERE  id = #{userId}
     </update>
 </mapper>

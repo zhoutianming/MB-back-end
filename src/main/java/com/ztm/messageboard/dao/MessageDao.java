@@ -1,6 +1,5 @@
 package com.ztm.messageboard.dao;
 
-import com.ztm.messageboard.entity.Content;
 import com.ztm.messageboard.entity.MessageDO;
 import com.ztm.messageboard.entity.MessageVO;
 import org.springframework.stereotype.Repository;
@@ -13,6 +12,10 @@ public interface MessageDao {
      *查询所有留言数据
     */
     List<MessageDO> queryAllMessageData();
+    /**
+     *根据id查询留言
+     */
+    MessageDO queryMessageById(Long messageId);
     /**
      *查询该用户留言数据
      */

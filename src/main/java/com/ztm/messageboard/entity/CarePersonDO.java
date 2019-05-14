@@ -8,7 +8,7 @@ public class CarePersonDO {
     /**
      * 关注的人id
      */
-    private String carePersonId;
+    private Integer carePersonId;
 
     public Integer getUserId() {
         return userId;
@@ -18,11 +18,11 @@ public class CarePersonDO {
         this.userId = userId;
     }
 
-    public String getCarePersonId() {
+    public Integer getCarePersonId() {
         return carePersonId;
     }
 
-    public void setCarePersonId(String carePersonId) {
+    public void setCarePersonId(Integer carePersonId) {
         this.carePersonId = carePersonId;
     }
 
